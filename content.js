@@ -54,38 +54,58 @@ gif.addEventListener('click', function() {
 });
 // ゲームを終了する関数
 function endGame() {
+  console.log('Game should end now.'); // デバッグのためのログ
+  if (!gameStarted) {
+    console.log('Game already ended or never started.'); // ゲームが既に終了している場合のログ
+    return;
+  }
   gameStarted = false;
-  activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
+  // すべてのGIFを削除する
+  activeGifs.forEach(gif => {
+    gif.removeEventListener('click', handleGifClick); // イベントリスナーを削除
+    gif.remove();
+  });
   activeGifs = [];
+  clearTimeout(gameTimer); // タイマーをクリア
   alert(`Time's up! Your score is: ${score}`); // スコアのアラート表示
+}
+
+// GIFのクリックイベントのハンドラー
+function handleGifClick() {
+  if (!gameStarted) return;
+  score++;
+  this.remove(); // GIFを消去
+  activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
+  if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
 }
 
 // GIFを生成して配置する関数
 function spawnGif() {
-  if (!gameStarted) return;
+  if (!gameStarted) return;  
   const gif = document.createElement('img');
   gif.src = chrome.runtime.getURL('huh_cat.gif');
   gif.className = 'aim-gif';
   gif.style.position = 'fixed';
-  // GIFがウィンドウの外に出ないように調整
-  gif.style.left = `${Math.random() * (window.innerWidth - gif.width)}px`;
-  gif.style.top = `${Math.random() * (window.innerHeight - gif.height)}px`;
+  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; // GIFの幅が100pxと仮定
+  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; // GIFの高さが100pxと仮定
   gif.style.zIndex = '1000';
-  // GIFのサイズを調整
-  gif.style.width = '100px'; // 幅を100pxに設定（元のサイズの1/3に相当）
+  gif.style.width = '100px'; // GIFのサイズを設定
   document.body.appendChild(gif);
 
   // GIFのクリックイベント
-  gif.addEventListener('click', function() {
-    if (!gameStarted) return;
-    score++;
-    gif.remove(); // GIFを消去
-    activeGifs = activeGifs.filter(item => item !== gif); // 削除されたGIFを配列から除去
-    maintainGifs(); // 常に3つのGIFを維持
-  });
-
+  gif.addEventListener('click', handleGifClick);
   activeGifs.push(gif); // 新しいGIFを配列に追加
 }
+
+// スタートボタンのクリックイベントを修正
+startButton.addEventListener('click', function() {
+  if (gameStarted) {
+    console.log('Game is already started.'); // ゲームが既に始まっている場合のログ
+    return;
+  }
+  startGame();
+});
+
 
 // 常に3つのGIFが表示されるように維持する関数
 function maintainGifs() {
@@ -111,9 +131,3 @@ function updateScore() {
 
 // スコア更新を呼び出す
 updateScore();
-
-// スタートボタンのクリックイベントを修正
-startButton.addEventListener('click', function() {
-  startGame();
-});
-
