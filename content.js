@@ -40,6 +40,7 @@ function startGame() {
   activeGifs = [];
   initGifs(); // ここで3つのGIFを生成する
   updateScore();
+  clearTimeout(gameTimer); // ゲームタイマーをリセットする
   gameTimer = setTimeout(endGame, 30000); // 60秒後にゲームを終了する
 }
 
