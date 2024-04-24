@@ -59,7 +59,7 @@ function endGame() {
     return;
   }
   clearTimeout(gameTimer); // ゲームタイマーをキャンセル
-  gameStarted = false;
+  gameStarted = false; // ここでgameStartedフラグをfalseに設定する
   activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
   activeGifs = [];
   alert(`Time's up! Your score is: ${score}`); // スコアのアラート表示
