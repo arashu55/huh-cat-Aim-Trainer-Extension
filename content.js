@@ -16,8 +16,11 @@ startButton.addEventListener('click', function() {
   gameStarted = true;
   startButton.style.display = 'none';
   score = 0;
+  activeGifs = []; // activeGifs 配列をリセット
+  for (let i = 0; i < 3; i++) { // 初期の3つのGIFを表示
+    spawnGif();
+  }
   updateScore();
-  maintainGifs(); // スタート時にGIFを3つ表示
 });
 
 // GIFを生成して配置する関数
@@ -27,25 +30,24 @@ function spawnGif() {
   gif.src = chrome.runtime.getURL('huh_cat.gif');
   gif.className = 'aim-gif';
   gif.style.position = 'fixed';
-  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; // GIFがウィンドウの外に出ないように調整
-  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; // 同上
+  // GIFがウィンドウの外に出ないように調整
+  gif.style.left = `${Math.random() * (window.innerWidth - gif.width)}px`;
+  gif.style.top = `${Math.random() * (window.innerHeight - gif.height)}px`;
   gif.style.zIndex = '1000';
-
   // GIFのサイズを調整
   gif.style.width = '100px'; // 幅を100pxに設定（元のサイズの1/3に相当）
-
   document.body.appendChild(gif);
-  
+
   // GIFのクリックイベント
   gif.addEventListener('click', function() {
     if (!gameStarted) return;
     score++;
     gif.remove(); // GIFを消去
-    spawnGif(); // 新しいGIFを生成
+    activeGifs = activeGifs.filter(item => item !== gif); // 削除されたGIFを配列から除去
     maintainGifs(); // 常に3つのGIFを維持
   });
-  
-  activeGifs.push(gif);
+
+  activeGifs.push(gif); // 新しいGIFを配列に追加
 }
 
 // 常に3つのGIFが表示されるように維持する関数
