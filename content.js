@@ -23,6 +23,30 @@ startButton.addEventListener('click', function() {
   updateScore();
 });
 
+// ゲームタイマーを管理する変数
+let gameTimer;
+
+// ゲームを開始する関数
+function startGame() {
+  gameStarted = true;
+  startButton.style.display = 'none';
+  score = 0;
+  activeGifs = [];
+  for (let i = 0; i < 3; i++) {
+    spawnGif();
+  }
+  updateScore();
+  gameTimer = setTimeout(endGame, 60000); // 1分後にゲームを終了する
+}
+
+// ゲームを終了する関数
+function endGame() {
+  gameStarted = false;
+  activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
+  activeGifs = [];
+  alert(`Time's up! Your score is: ${score}`); // スコアのアラート表示
+}
+
 // GIFを生成して配置する関数
 function spawnGif() {
   if (!gameStarted) return;
@@ -74,4 +98,9 @@ function updateScore() {
 
 // スコア更新を呼び出す
 updateScore();
+
+// スタートボタンのクリックイベントを修正
+startButton.addEventListener('click', function() {
+  startGame();
+});
 
