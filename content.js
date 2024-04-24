@@ -40,18 +40,16 @@ function startGame() {
   activeGifs = [];
   initGifs(); // ここで3つのGIFを生成する
   updateScore();
-  clearTimeout(gameTimer); // ゲームタイマーをリセットする
   gameTimer = setTimeout(endGame, 30000); // 60秒後にゲームを終了する
 }
 
 // GIFをクリックしたときに追加GIFを生成する部分を削除
-// GIFのクリックイベントのハンドラー
 function handleGifClick() {
   if (!gameStarted) return;
   score++;
-  this.remove(); // thisでGIF要素を参照
-  activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
-  if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
+  this.remove();
+  activeGifs = activeGifs.filter(item => item !== this);
+  if (activeGifs.length < 3) spawnGif();
 }
 // ゲームを終了する関数
 function endGame() {
@@ -60,8 +58,8 @@ function endGame() {
     console.log('Game already ended or never started.');
     return;
   }
-  clearTimeout(gameTimer); // ゲームタイマーをキャンセル
   gameStarted = false; // ここでgameStartedフラグをfalseに設定する
+  clearTimeout(gameTimer); // ゲームタイマーをキャンセル
   activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
   activeGifs = [];
   alert(`Time's up! Your score is: ${score}`); // スコアのアラート表示
@@ -83,19 +81,14 @@ function spawnGif() {
   gif.src = chrome.runtime.getURL('huh_cat.gif');
   gif.className = 'aim-gif';
   gif.style.position = 'fixed';
-  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; 
-  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; 
+  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; // GIFの幅が100pxと仮定
+  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; // GIFの高さが100pxと仮定
   gif.style.zIndex = '1000';
-  gif.style.width = '100px'; 
+  gif.style.width = '100px'; // GIFのサイズを設定
   document.body.appendChild(gif);
 
+  // GIFのクリックイベント
   gif.addEventListener('click', handleGifClick);
-    if (!gameStarted) return;
-    score++;
-    this.remove(); // GIFを消去
-    activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
-    if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
-
   activeGifs.push(gif); // 新しいGIFを配列に追加
 }
 
@@ -107,13 +100,8 @@ function maintainGifs() {
 }
 // スコア表示のUIをページに追加
 const scoreDisplay = document.createElement('div');
-scoreDisplay.id = 'aim-score';
-scoreDisplay.style.position = 'fixed';
-scoreDisplay.style.bottom = '10px';
-scoreDisplay.style.right = '10px';
-scoreDisplay.style.zIndex = '1001';
-document.body.appendChild(scoreDisplay);
 
+document.body.appendChild(scoreDisplay);
 // スコア更新関数
 function updateScore() {
   if (!gameStarted) return;
@@ -123,3 +111,11 @@ function updateScore() {
 
 // スコア更新を呼び出す
 updateScore();
+
+scoreDisplay.id = 'aim-score';
+scoreDisplay.style.position = 'fixed';
+scoreDisplay.style.bottom = '10px';
+scoreDisplay.style.right = '10px';
+scoreDisplay.style.zIndex = '1001';
+
+
