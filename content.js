@@ -55,6 +55,7 @@ function endGame() {
     console.log('Game already ended or never started.');
     return;
   }
+  clearTimeout(gameTimer); // ゲームタイマーをキャンセル
   gameStarted = false;
   activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
   activeGifs = [];
@@ -87,16 +88,6 @@ function spawnGif() {
   gif.addEventListener('click', handleGifClick);
   activeGifs.push(gif); // 新しいGIFを配列に追加
 }
-
-// スタートボタンのクリックイベントを修正
-startButton.addEventListener('click', function() {
-  if (gameStarted) {
-    console.log('Game is already started.'); // ゲームが既に始まっている場合のログ
-    return;
-  }
-  startGame();
-});
-
 
 // 常に3つのGIFが表示されるように維持する関数
 function maintainGifs() {
