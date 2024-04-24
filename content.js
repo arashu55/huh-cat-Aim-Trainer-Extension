@@ -1,5 +1,7 @@
 // ゲームの状態を管理する変数
 let gameStarted = false;
+let score = 0; // スコア変数
+let activeGifs = []; // アクティブなGIFを保持する配列
 
 // スタートボタンを作成し、ページに追加
 const startButton = document.createElement('button');
@@ -51,6 +53,7 @@ gif.addEventListener('click', function() {
 });
 // ゲームを終了する関数
 function endGame() {
+  console.log('endGame function called'); // デバッグ用のログを追加
   if (!gameStarted) {
     console.log('Game already ended or never started.');
     return;
