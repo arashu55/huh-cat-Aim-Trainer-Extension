@@ -26,19 +26,32 @@ startButton.addEventListener('click', function() {
 // ゲームタイマーを管理する変数
 let gameTimer;
 
+// ゲーム開始時に3つのGIFを生成する関数を追加
+function initGifs() {
+  while (activeGifs.length < 3) {
+    spawnGif();
+  }
+}
+
 // ゲームを開始する関数
 function startGame() {
   gameStarted = true;
   startButton.style.display = 'none';
   score = 0;
   activeGifs = [];
-  for (let i = 0; i < 3; i++) {
-    spawnGif();
-  }
+  initGifs(); // ここで3つのGIFを生成する
   updateScore();
   gameTimer = setTimeout(endGame, 60000); // 1分後にゲームを終了する
 }
 
+// GIFをクリックしたときに追加GIFを生成する部分を削除
+gif.addEventListener('click', function() {
+  if (!gameStarted) return;
+  score++;
+  gif.remove(); // GIFを消去
+  activeGifs = activeGifs.filter(item => item !== gif); // 削除されたGIFを配列から除去
+  if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
+});
 // ゲームを終了する関数
 function endGame() {
   gameStarted = false;
