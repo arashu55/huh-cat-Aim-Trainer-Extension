@@ -1,0 +1,68 @@
+// ゲームの状態を管理する変数
+let gameStarted = false;
+
+// スタートボタンを作成し、ページに追加
+const startButton = document.createElement('button');
+startButton.textContent = 'Start Training';
+startButton.id = 'start-training';
+startButton.style.position = 'fixed';
+startButton.style.top = '10px';
+startButton.style.right = '10px';
+startButton.style.zIndex = '1001';
+document.body.appendChild(startButton);
+
+// スタートボタンのクリックイベント
+startButton.addEventListener('click', function() {
+  // ゲームの状態を開始に変更
+  gameStarted = true;
+  // スタートボタンを非表示にする
+  startButton.style.display = 'none';
+  // スコアをリセット
+  score = 0;
+  // 3つのGIFを生成
+  for (let i = 0; i < 3; i++) {
+    spawnGif();
+  }
+});
+
+// GIFを生成して配置する関数
+function spawnGif() {
+  if (!gameStarted) return; // ゲームが開始されていなければ何もしない
+  const gif = document.createElement('img');
+  gif.src = chrome.runtime.getURL('huh_cat.gif');
+  gif.className = 'aim-gif';
+  gif.style.position = 'fixed';
+  gif.style.left = `${Math.random() * window.innerWidth}px`;
+  gif.style.top = `${Math.random() * window.innerHeight}px`;
+  gif.style.zIndex = '1000';
+  document.body.appendChild(gif);
+  
+  // GIFのクリックイベント
+  gif.addEventListener('click', function() {
+    if (!gameStarted) return;
+    score++;
+    gif.remove();
+    spawnGif();
+  });
+  activeGifs.push(gif);
+}
+
+// スコア表示のUIをページに追加
+const scoreDisplay = document.createElement('div');
+scoreDisplay.id = 'aim-score';
+scoreDisplay.style.position = 'fixed';
+scoreDisplay.style.bottom = '10px';
+scoreDisplay.style.right = '10px';
+scoreDisplay.style.zIndex = '1001';
+document.body.appendChild(scoreDisplay);
+
+// スコア更新関数
+function updateScore() {
+  if (!gameStarted) return;
+  scoreDisplay.textContent = `Score: ${score}`;
+  requestAnimationFrame(updateScore);
+}
+
+// スコア更新を呼び出す
+updateScore();
+
