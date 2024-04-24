@@ -13,14 +13,11 @@ document.body.appendChild(startButton);
 
 // スタートボタンのクリックイベントを修正
 startButton.addEventListener('click', function() {
-  gameStarted = true;
-  startButton.style.display = 'none';
-  score = 0;
-  activeGifs = []; // activeGifs 配列をリセット
-  for (let i = 0; i < 3; i++) { // 初期の3つのGIFを表示
-    spawnGif();
+  if (gameStarted) {
+    console.log('Game is already started.');
+    return;
   }
-  updateScore();
+  startGame();
 });
 
 // ゲームタイマーを管理する変数
@@ -41,7 +38,7 @@ function startGame() {
   activeGifs = [];
   initGifs(); // ここで3つのGIFを生成する
   updateScore();
-  gameTimer = setTimeout(endGame, 60000); // 1分後にゲームを終了する
+  gameTimer = setTimeout(endGame, 30000); // 60秒後にゲームを終了する
 }
 
 // GIFをクリックしたときに追加GIFを生成する部分を削除
@@ -54,19 +51,13 @@ gif.addEventListener('click', function() {
 });
 // ゲームを終了する関数
 function endGame() {
-  console.log('Game should end now.'); // デバッグのためのログ
   if (!gameStarted) {
-    console.log('Game already ended or never started.'); // ゲームが既に終了している場合のログ
+    console.log('Game already ended or never started.');
     return;
   }
   gameStarted = false;
-  // すべてのGIFを削除する
-  activeGifs.forEach(gif => {
-    gif.removeEventListener('click', handleGifClick); // イベントリスナーを削除
-    gif.remove();
-  });
+  activeGifs.forEach(gif => gif.remove()); // すべてのGIFを削除する
   activeGifs = [];
-  clearTimeout(gameTimer); // タイマーをクリア
   alert(`Time's up! Your score is: ${score}`); // スコアのアラート表示
 }
 
