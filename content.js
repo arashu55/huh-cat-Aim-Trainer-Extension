@@ -82,14 +82,20 @@ function spawnGif() {
   gif.src = chrome.runtime.getURL('huh_cat.gif');
   gif.className = 'aim-gif';
   gif.style.position = 'fixed';
-  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; // GIFの幅が100pxと仮定
-  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; // GIFの高さが100pxと仮定
+  gif.style.left = `${Math.random() * (window.innerWidth - 100)}px`; 
+  gif.style.top = `${Math.random() * (window.innerHeight - 100)}px`; 
   gif.style.zIndex = '1000';
-  gif.style.width = '100px'; // GIFのサイズを設定
+  gif.style.width = '100px'; 
   document.body.appendChild(gif);
 
-  // GIFのクリックイベント
-  gif.addEventListener('click', handleGifClick);
+  gif.addEventListener('click', function() {
+    if (!gameStarted) return;
+    score++;
+    this.remove(); // GIFを消去
+    activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
+    if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
+  });
+
   activeGifs.push(gif); // 新しいGIFを配列に追加
 }
 
