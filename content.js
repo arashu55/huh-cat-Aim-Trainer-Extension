@@ -45,13 +45,14 @@ function startGame() {
 }
 
 // GIFをクリックしたときに追加GIFを生成する部分を削除
-gif.addEventListener('click', function() {
+// GIFのクリックイベントのハンドラー
+function handleGifClick() {
   if (!gameStarted) return;
   score++;
-  gif.remove(); // GIFを消去
-  activeGifs = activeGifs.filter(item => item !== gif); // 削除されたGIFを配列から除去
+  this.remove(); // thisでGIF要素を参照
+  activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
   if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
-});
+}
 // ゲームを終了する関数
 function endGame() {
   console.log('endGame function called'); // デバッグ用のログを追加
@@ -88,13 +89,12 @@ function spawnGif() {
   gif.style.width = '100px'; 
   document.body.appendChild(gif);
 
-  gif.addEventListener('click', function() {
+  gif.addEventListener('click', handleGifClick);
     if (!gameStarted) return;
     score++;
     this.remove(); // GIFを消去
     activeGifs = activeGifs.filter(item => item !== this); // 削除されたGIFを配列から除去
     if (activeGifs.length < 3) spawnGif(); // GIFが3つ未満の場合に新しいGIFを追加
-  });
 
   activeGifs.push(gif); // 新しいGIFを配列に追加
 }
